@@ -1,0 +1,23 @@
+# --- secrets / env ---
+.env
+.env.*
+
+# --- docker ---
+*.log
+
+# --- temp uploads ---
+tmp/
+temp/
+uploads/
+*.tmp
+
+# --- IDE ---
+.idea/
+.vscode/
+
+# --- build ---
+target/
+build/
+
+# --- OS ---
+.DS_Store
