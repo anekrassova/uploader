@@ -45,13 +45,19 @@ services:
       - postgres
       - kafka
 
-#  worker:
-#    build: ./worker-service
-#    volumes:
-#      - temp_files:/tmp/uploads
-#    depends_on:
-#      - postgres
-#      - kafka
+  worker:
+    build: ./worker-service
+    volumes:
+      - temp_files:/tmp/uploads
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    depends_on:
+      - postgres
+      - kafka
 
   minio:
     image: minio/minio

@@ -21,21 +21,24 @@ public class FileService {
 
     @Transactional
     public FileEntity saveFileIfNotExist(UUID fileId, Long clientId, String key, String tempPath) {
-        try{
-            FileEntity entity = fileRepository.save(new FileEntity(
-                    fileId,
-                    clientId,
-                    key,
-                    FileStatus.UPLOADING,
-                    tempPath,
-                    Instant.now()
-            ));
+        return fileRepository
+                .findByClientIdAndIdempotencyKey(clientId, key)
+                .orElseGet(() -> {
 
-            producer.send(new FileUploadEvent(fileId, tempPath));
+                    FileEntity entity = new FileEntity(
+                            fileId,
+                            clientId,
+                            key,
+                            FileStatus.UPLOADING,
+                            tempPath,
+                            Instant.now()
+                    );
 
-            return entity;
-        } catch(DataIntegrityViolationException e){
-            return fileRepository.findByClientIdAndIdempotencyKey(clientId, key).orElseThrow();
-        }
+                    FileEntity saved = fileRepository.save(entity);
+
+                    producer.send(new FileUploadEvent(fileId, tempPath));
+
+                    return saved;
+                });
     }
 }
