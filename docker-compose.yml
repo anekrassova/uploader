@@ -12,6 +12,7 @@ services:
 
   kafka:
     image: apache/kafka:3.7.0
+    container_name: kafka-broker
     ports:
       - "9092:9092"
     environment:
@@ -27,6 +28,8 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+    volumes:
+      - kafka_data:/var/lib/kafka/data
 
 #  api:
 #    build: ./api-service
@@ -62,3 +65,4 @@ volumes:
   pg_data:
   temp_files:
   minio_data:
+  kafka_data:
