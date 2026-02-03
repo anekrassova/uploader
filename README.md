@@ -20,4 +20,5 @@
 1. *Предварительные требования*: Docker.
 2. *Переменные окружения.* Создать .env в корне проекта по образцу:
 <img width="219" height="218" alt="Снимок экрана 2026-02-03 в 14 55 30" src="https://github.com/user-attachments/assets/049b85d2-34a4-4dbd-a64a-9f6490cddc94" />
+
 3. *Сборка и запуск.* Из корня проекта выполнить команду `docker compose up --build`. После запуска будут подняты: PostgreSQL, Kafka, MinIO, API Service, Worker Service.
