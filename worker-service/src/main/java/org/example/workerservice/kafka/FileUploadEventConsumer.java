@@ -1,13 +1,18 @@
 package org.example.workerservice.kafka;
 
+import lombok.RequiredArgsConstructor;
 import org.example.workerservice.dto.FileUploadEvent;
+import org.example.workerservice.service.FileProcessingService;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class FileUploadEventConsumer {
+    private final FileProcessingService service;
+
     @KafkaListener(topics="topic-1")
     public void consume(FileUploadEvent event) {
-        System.out.println("Received file upload event: {}"+ event);
+        service.process(event);
     }
 }
