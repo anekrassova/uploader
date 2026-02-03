@@ -19,6 +19,12 @@ public class FileService {
     private final FileRepository fileRepository;
     private final FileUploadEventProducer producer;
 
+    public FileEntity findByClientAndKey(Long clientId, String key) {
+        return fileRepository
+                .findByClientIdAndIdempotencyKey(clientId, key)
+                .orElse(null);
+    }
+
     @Transactional
     public FileEntity saveFileIfNotExist(UUID fileId, Long clientId, String key, String tempPath) {
         return fileRepository

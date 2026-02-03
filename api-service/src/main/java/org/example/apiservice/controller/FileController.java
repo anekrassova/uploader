@@ -26,6 +26,13 @@ public class FileController {
             @RequestParam("clientId") Long clientId,
             @RequestParam("file") MultipartFile file
     ) throws IOException {
+        FileEntity existing = fileService.findByClientAndKey(clientId, idempotencyKey);
+        if (existing != null) {
+            return ResponseEntity.ok(
+                    new FileUploadResponse(existing.getId(), existing.getStatus())
+            );
+        }
+
         UUID fileId = UUID.randomUUID();
         String tempFileName = fileId + "_" + file.getOriginalFilename();
         Path tempPath = Path.of("/tmp/uploads/", tempFileName);
