@@ -3,6 +3,7 @@ package org.example.apiservice.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.apiservice.dto.FileUploadResponse;
 import org.example.apiservice.entity.FileEntity;
+import org.example.apiservice.orchestrator.UploadOrchestrator;
 import org.example.apiservice.service.FileService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class FileController {
     private final FileService fileService;
+    private final UploadOrchestrator orchestrator;
 
     @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<FileUploadResponse> uploadFile(
@@ -40,7 +42,12 @@ public class FileController {
         Files.createDirectories(tempPath.getParent());
         Files.write(tempPath, file.getBytes());
 
-        FileEntity entity = fileService.saveFileIfNotExist(fileId, clientId, idempotencyKey, tempPath.toString());
+        FileEntity entity = orchestrator.handleUpload(
+                fileId,
+                clientId,
+                idempotencyKey,
+                tempPath.toString()
+        );
 
         return ResponseEntity
                 .status(HttpStatus.ACCEPTED)

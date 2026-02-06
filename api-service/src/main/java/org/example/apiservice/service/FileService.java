@@ -29,22 +29,17 @@ public class FileService {
     public FileEntity saveFileIfNotExist(UUID fileId, Long clientId, String key, String tempPath) {
         return fileRepository
                 .findByClientIdAndIdempotencyKey(clientId, key)
-                .orElseGet(() -> {
-
-                    FileEntity entity = new FileEntity(
-                            fileId,
-                            clientId,
-                            key,
-                            FileStatus.UPLOADING,
-                            tempPath,
-                            Instant.now()
-                    );
-
-                    FileEntity saved = fileRepository.save(entity);
-
-                    producer.send(new FileUploadEvent(fileId, tempPath));
-
-                    return saved;
-                });
+                .orElseGet(() ->
+                        fileRepository.save(
+                                new FileEntity(
+                                        fileId,
+                                        clientId,
+                                        key,
+                                        FileStatus.UPLOADING,
+                                        tempPath,
+                                        Instant.now()
+                                )
+                        )
+                );
     }
 }
